@@ -86,3 +86,60 @@ Hello, world!
 $ echo -n 'John' | fn invoke hello-app hello-world
 Hello, John!
 ```
+
+# 上記、FunctionをOCI Functionsとして実行してください
+```
+[opc@bastion-instance-20230609 ~]$ fn --version
+fn version 0.6.26
+[opc@bastion-instance-20230609 ~]$ 
+[opc@bastion-instance-20230609 ~]$ 
+[opc@bastion-instance-20230609 ~]$ fn init --runtime java helloworld
+Creating function at: ./helloworld
+Function boilerplate generated.
+func.yaml created.
+[opc@bastion-instance-20230609 ~]$ cd helloworld/
+[opc@bastion-instance-20230609 helloworld]$ fn list context
+CURRENT NAME            PROVIDER        API URL                                         REGISTRY
+        default         default         http://localhost:8080
+*       lhr-app01       oracle          https://functions.uk-london-1.oraclecloud.com   lhr.ocir.io/orasejapan/lhr-fn-repo01
+        lhr             oracle          https://functions.uk-london-1.oraclecloud.com   lhr.ocir.io/orasejapan/lhr-functions-repo-01
+[opc@bastion-instance-20230609 helloworld]$ fn create context kix-helloworld --provider oracle
+Successfully created context: kix-helloworld 
+[opc@bastion-instance-20230609 helloworld]$ fn use context kix-helloworld
+Now using context: kix-helloworld 
+[opc@bastion-instance-20230609 helloworld]$ fn update context oracle.compartment-id ocid1.compartment.oc1..aaaaaaaamyemvazvbgl42f5pi7gzlpgq5tcmxlipjm2uitoihfschylliy5a
+Current context updated oracle.compartment-id with ocid1.compartment.oc1..aaaaaaaamyemvazvbgl42f5pi7gzlpgq5tcmxlipjm2uitoihfschylliy5a
+[opc@bastion-instance-20230609 helloworld]$ fn update context api-url https://functions.ap-osaka-1.oraclecloud.com
+Current context updated api-url with https://functions.ap-osaka-1.oraclecloud.com
+[opc@bastion-instance-20230609 helloworld]$ fn update context registry kix.ocir.io/orasejapan/kix-cnstudy-repo
+Current context updated registry with kix.ocir.io/orasejapan/kix-cnstudy-repo
+[opc@bastion-instance-20230609 helloworld]$ docker login -u 'orasejapan/oracleidentitycloudservice/kosuke.machida@oracle.com' kix.ocir.io
+Password: 
+WARNING! Your password will be stored unencrypted in /home/opc/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+[opc@bastion-instance-20230609 helloworld]$ fn deploy --app helloworld
+Deploying helloworld to app: helloworld
+Bumped to version 0.0.2
+Using Container engine docker
+Building image kix.ocir.io/orasejapan/kix-cnstudy-repo/helloworld:0.0.2 ...................................................................
+Updating function helloworld using image kix.ocir.io/orasejapan/kix-cnstudy-repo/helloworld:0.0.2...
+Successfully created function: helloworld with kix.ocir.io/orasejapan/kix-cnstudy-repo/helloworld:0.0.2
+[opc@bastion-instance-20230609 helloworld]$ fn list a
+NAME            ID
+helloworld      ocid1.fnapp.oc1.ap-osaka-1.aaaaaaaatsewf2ucrr2h2k2ftam3egokoclwz3vbhj5ngmsrneyg4vwjl5dq
+[opc@bastion-instance-20230609 helloworld]$ fn list f
+
+Fn: List functions for an application using fn list functions requires the missing argument '<app-name>'
+
+See 'fn list functions --help' for more information.
+[opc@bastion-instance-20230609 helloworld]$ fn list f helloworld
+NAME            IMAGE                                                           ID
+helloworld      kix.ocir.io/orasejapan/kix-cnstudy-repo/helloworld:0.0.2        ocid1.fnfunc.oc1.ap-osaka-1.aaaaaaaa7d5ygxnj3lz2cft5szp5pxu4gjrhkn53j2l3aohapad2itvuwxuq
+[opc@bastion-instance-20230609 helloworld]$ fn invoke helloworld helloworld
+Hello, world!
+[opc@bastion-instance-20230609 helloworld]$ echo -n 'John' | fn invoke helloworld helloworld
+Hello, John!
+```
