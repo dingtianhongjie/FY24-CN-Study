@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: cowweb
+  name: cowweb
+spec:
+  containers:
+  - image: kix.ocir.io/orasejapan/kix-cnstudy-repo/cowweb-helidon:1.0
+    name: cowweb
+    livenessProbe:
+      httpGet:
+        path: /healt
+        port: 8080
+      initialDelaySeconds: 3
+      periodSeconds: 3
+    readinessProbe:
+      httpGet:
+        path: /health
+        port: 8080
+      initialDelaySeconds: 5
+      periodSeconds: 5
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
